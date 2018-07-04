@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>动态创建任务列表</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="taskList.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div class="page-top">
+        <div class="page-content">
+            <h2>任务计划列表</h2>
+        </div>
+    </div>
+    <div class="main">
+        <h3>添加任务：</h3>
+        <input 
+        type="text" 
+        placeholder="请输入任务计划 提示：+回车即可添加任务" 
+        class="add-task-input"
+        v-model="todo"
+        v-on:keyup.enter="addTodo"
+        />
+        <ul class="task-count" v-show = "list.length">
+            <li>
+               <!-- {{list.filter(function(item){
+                    return !item.isChecked
+            }).length}}   -->
+                {{noCheckLength}}
+                个任务未完成</li>
+            <li class="action">
+                <a href="#" class="active">所有任务</a>
+                <a href="#">未完成的任务</a>
+                <a href="#">已完成的任务</a>
+            </li>
+        </ul>
+        <h3>任务列表</h3>
+        <div class="tasks">
+            <!-- v-show用于渲染页面的样式 -->
+            <span class="no-task-tip" v-show="! list.length">还没有添加任何任务</span>
+            <ul class="todo-list">
+                <!-- v-bind可用于绑定css的class属性 -->
+                <li class="todo" v-for="item in list" 
+                v-bind:class = "{completed:item.isChecked, 
+                    editing:item===editorTodos}">
+                    <div class="view">
+                        <input type="checkbox" class="toggle" v-model="item.isChecked">
+                        <label v-on:click="editorTodo(item)">{{item.title}}</label>
+                        <button class="destroy" v-on:click="deleteTodo(item)"></button>
+                    </div>
+                    <input 
+                        v-focus="editorTodos=== item"  
+                        type="text" class="edit"
+                        v-model="item.title"
+                        @blur = "editored(item)"
+                        @keyup.13="editored(item)"
+                        @keyup.esc="cancelTodo(item)">
+                </li>
+                <!-- <li class="todo">
+                        <div class="view">
+                            <input type="checkbox" class="toggle">
+                            <label>学习精神</label>
+                            <button class="destroy"></button>
+                        </div>
+                        <input type="text" class="edit">
+                    </li> -->
+            </ul>
+        </div>
+    </div>
+    <script src="task.js"></script>
+</body>
+</html>
